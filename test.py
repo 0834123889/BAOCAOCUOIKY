@@ -1,4 +1,3 @@
-
 import pytest
 import os
 from selenium import webdriver
@@ -44,14 +43,14 @@ def search(driver, search_query):
         return []
 #brand_search_01
 #pass
-def test_Search_Correct_data(driver):
+def test_timkiem_kytu_hople(driver):
     search_query = "Seiko"
     result = search(driver, search_query)
     assert len(result) > 0, f"Test failed: Không tìm thấy thương hiệu với từ khóa '{search_query}'."
 
 #brand_search_02
 #pass
-def test_Search_InCorrect_data(driver):
+def test_timkiem_kytu_khonghople(driver):
     search_query = "khongbiet"
 
     # Thực hiện tìm kiếm với từ khóa không hợp lệ
@@ -64,14 +63,14 @@ def test_Search_InCorrect_data(driver):
 
 #brand_search_03
 #fail
-def test_Search_blank(driver):
+def test_timkiem_kytu_rong(driver):
     search_query = ""
     result = search(driver, search_query)
     assert len(result) == 0, f"Test failed: Không tìm thấy thương hiệu với từ khóa '{search_query}'."
 
 #brand_search_04
 #pass
-def test_search_with_special_characters(driver):
+def test_timkiem_kytu_dacbiet(driver):
     search_query = "!@#$%"
     result = search(driver, search_query)
     assert len(result) == 0, f"Test failed: Không tìm thấy thương hiệu với từ khóa '{search_query}'."
@@ -79,7 +78,7 @@ def test_search_with_special_characters(driver):
 
 #brand_search_05
 #pass
-def test_search_with_uppercase(driver):
+def test_timkiem_kytu_inhoa(driver):
     search_query = "SEIKO"
 
     # Thực hiện tìm kiếm với từ khóa viết hoa
@@ -90,7 +89,7 @@ def test_search_with_uppercase(driver):
 
 #brand_search_06
 #pass
-def test_search_with_keyword_surrounded_by_whitespace(driver):
+def test_timkiem_kytu_khoangtrang(driver):
     search_query = "  Seiko  "
     # Thực hiện tìm kiếm với từ khóa viết hoa
     result = search(driver, search_query)
@@ -101,8 +100,7 @@ def test_search_with_keyword_surrounded_by_whitespace(driver):
     no_brands_message = "Không có thương hiệu nào để hiển thị!"
     assert no_brands_message in driver.page_source
 
-
-def add_brand(driver, name, description, status):
+def them_thuonghieu(driver, name, description, status):
     driver.get("http://watchplace.great-site.net/brand-manager.php")
     time.sleep(3)
 
@@ -152,26 +150,26 @@ def add_brand(driver, name, description, status):
 
 #Add_brand_01
 #pass
-def test_add_brand_correct_data(driver):
+def test_add_thuonghieu_hople(driver):
     name = "Đồng hồ áldkjasd"
     des = "Đồng hồ áldkjasd"
     # value = 0 : ngừng hoạt động ; value = 1: hoạt động
     status = "1"
-    add_brand(driver, name, des, status)
+    them_thuonghieu(driver, name, des, status)
 
 #Add_brand_02
 #Fail
 #fail_vì khi add kí hiệu đặc hiệu không có thông báo sai
-def test_add_brand_special_character(driver):
+def test_add_thuonghieu_kytu_dacbiet(driver):
     name = "@@@@"  # Tên thương hiệu không hợp lệ
     des = "@@@"    # Mô tả không hợp lệ
     status = "0"   # Trạng thái không hoạt động
 
     # Gọi hàm để thêm thương hiệu
-    result = add_brand(driver, name, des, status)
+    them_thuonghieu(driver, name, des, status)
 
     # Kiểm tra xem thương hiệu không được thêm vào danh sách
-    assert result is False, f"Thương hiệu '{name}' không nên được thêm vào, nhưng lại đã được thêm."
+    assert them_thuonghieu is False, f"Thương hiệu '{name}' không nên được thêm vào, nhưng lại đã được thêm."
 
 #Add_brand_03
 #pass
@@ -183,7 +181,7 @@ def test_add_brand_same_data(driver):
     status = "1"
 
     # Gọi hàm thêm thương hiệu
-    result = add_brand(driver, name, description, status)
+    them_thuonghieu(driver, name, description, status)
 
     try:
         WebDriverWait(driver, 10).until(EC.alert_is_present())
@@ -194,8 +192,7 @@ def test_add_brand_same_data(driver):
     except TimeoutException:
         print("Alert không xuất hiện!")
 
-
-def edit_brand(driver, id, new_name, new_des):
+def sua_thuonghieu(driver, id, new_name, new_des):
     # Truy cập vào trang quản lý thương hiệu
     driver.get("http://watchplace.great-site.net/brand-manager.php")
     time.sleep(3)
@@ -258,11 +255,11 @@ def edit_brand(driver, id, new_name, new_des):
 
 #Edit_brand_01
 #pass
-def test_edit_brand(driver):
+def test_sua_thongtin_thuonghieu(driver):
     id = "BR022"
     new_name = "sửa thử"
     des = "sửa thử"
-    edit_brand(driver, id, new_name, des)
+    sua_thuonghieu(driver, id, new_name, des)
 
 #Edit_brand_01
 #pass
@@ -367,7 +364,7 @@ def filter(driver, start, end, order_status=None):
     confirm_button = driver.find_element(By.NAME, "submit")
     confirm_button.click()
 
-    # Kiểm tra thông báo lỗi
+    # B1 Kiểm tra thông báo lỗi
     try:
         WebDriverWait(driver, 5).until(EC.alert_is_present())
         alert = driver.switch_to.alert
@@ -375,13 +372,13 @@ def filter(driver, start, end, order_status=None):
         alert.accept()
         return f"Lỗi: {alert_text}"
     except Exception:
-        pass  # Không có alert, tiếp tục xử lý
+        pass  # B2 Không có alert, tiếp tục xử lý
 
-    # Kiểm tra nếu không nhập ngày thì trả về thông báo lỗi
+    # B3 Kiểm tra nếu không nhập ngày thì trả về thông báo lỗi
     if not start and not end:
         return "Vui lòng nhập ngày bắt đầu và kết thúc"
 
-    # Lấy thông tin từ bảng
+    # B4 Lấy thông tin từ bảng
     try:
         info_date_el = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.CLASS_NAME, "order__table"))
@@ -398,7 +395,7 @@ def filter(driver, start, end, order_status=None):
 
 #filter_01
 #pass
-def test_filter_dates(driver):
+def test_filter_thoigian_hople(driver):
     start_valid = "01/07/2024"
     end_valid = "12/07/2024"
     results_valid = filter(driver, start_valid, end_valid)
@@ -407,7 +404,7 @@ def test_filter_dates(driver):
 
 #filter_02
 #pass
-def test_filter_invalid_dates(driver):
+def test_filter_thoigian_Khople(driver):
     start_invalid = "01/01/01"
     end_invalid = "02/02/02"
     result = filter(driver, start_invalid, end_invalid)
@@ -418,14 +415,14 @@ def test_filter_invalid_dates(driver):
 
 #filter_03
 #pass
-def test_filter_blank_dates(driver):
+def test_filter_khongnhap_ngayloc(driver):
     results_no_date = filter(driver, "", "")
     assert "Vui lòng nhập" in results_no_date, \
         "Kỳ vọng có thông báo lỗi khi không nhập ngày, nhưng không nhận được"
 
 #filter_04
 #pass
-def test_filter_start_dates(driver):
+def test_filter_ngay_batdau(driver):
     start = "01/07/2024"
     results_start_only = filter(driver, start, "")
     assert "" in results_start_only, \
@@ -433,7 +430,7 @@ def test_filter_start_dates(driver):
 
 #filter_05
 #pass
-def test_filter_bigger_dates(driver):
+def test_filter_Startdates_bigger_finishdates(driver):
     start_later = "15/07/2024"
     end_earlier = "10/07/2024"
     results_later = filter(driver, start_later, end_earlier)
@@ -441,7 +438,7 @@ def test_filter_bigger_dates(driver):
 
 #filter_06
 #pass
-def test_filter_with_order_status(driver):
+def test_filter_trangthai_donhang(driver):
     start_date = "01/07/2024"
     end_date = "12/07/2024"
     order_status = "Đã giao hàng"  # Chọn trạng thái nào đó từ danh sách
@@ -450,5 +447,5 @@ def test_filter_with_order_status(driver):
 
     # Kiểm tra rằng kết quả không trống
     assert len(results) > 0, "Kỳ vọng có kết quả, nhưng không có kết quả nào được trả về"
-
+    
 
